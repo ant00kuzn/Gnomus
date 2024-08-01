@@ -2,7 +2,7 @@ package Gnomus
 
 import (
 	"github.com/Tnze/go-mc/net"
-	"github.com/ant00kuzn/Gnomus/Gnomus/server"
+	"github.com/ant00kuzn/Gnomus/server"
 	"log"
 )
 
