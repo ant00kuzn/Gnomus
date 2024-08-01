@@ -2,12 +2,12 @@ package Gnomus
 
 import (
 	"github.com/Tnze/go-mc/net"
+	"github.com/ant00kuzn/Gnomus/Gnomus/server"
 	"log"
 )
 
-// InitSRV - Функция запуска сервера
-func InitSRV() {
-	// Запускаем сокет по адрессу 0.0.0.0:25565
+func main() {
+	// Запуск сокета
 	loop, err := net.ListenMC(":25565")
 	// Если есть ошибка, то выводим её
 	if err != nil {
@@ -23,6 +23,6 @@ func InitSRV() {
 			continue
 		}
 		// Принимаем подключение и обрабатываем его не блокируя основной поток
-		go acceptConnection(connection)
+		go Gnomus.AcceptConnection(connection)
 	}
 }

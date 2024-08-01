@@ -2,9 +2,10 @@ package Gnomus
 
 import (
 	"github.com/Tnze/go-mc/net"
+	"github.com/ant00kuzn/Gnomus/Gnomus/server/protocol"
 )
 
-func acceptConnection(conn net.Conn) {
+func AcceptConnection(conn net.Conn) {
 	defer func(conn *net.Conn) {
 		err := conn.Close()
 		if err != nil {
@@ -12,7 +13,7 @@ func acceptConnection(conn net.Conn) {
 		}
 	}(&conn)
 	// Читаем пакет-рукопожатие(HandSnake)
-	_, nextState, _, _, err := server.ReadHandSnake(conn)
+	_, nextState, _, _, err := protocol.ReadHandSnake(conn)
 	// Если при чтении была некая ошибка, то просто перестаём обрабатывать подключение
 	if err != nil {
 		return
