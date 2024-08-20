@@ -57,16 +57,16 @@ func listResp() string {
 			Sample []listRespPlayer `json:"sample"`
 		} `json:"players"`
 		Description chat.Message `json:"description"`
-		FavIcon     string       `json:"favicon,omitempty"`
+		FavIcon     string       `json:"favicon,gnomus.png"`
 	}
 
 	// Устанавливаем дефолтные данные для ответа
 	list.Version.Name = "Gnomus"
 	list.Version.Protocol = int(config.ProtocolVersion)
 	list.Players.Max = 25
-	list.Players.Online = 0
+	list.Players.Online = 1
 	list.Players.Sample = []listRespPlayer{{
-		Name: "Пример игрока :)",
+		Name: "pov228",
 		ID:   uuid.UUID{},
 	}}
 	list.Description = config.MOTD
