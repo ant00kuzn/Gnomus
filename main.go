@@ -2,22 +2,22 @@ package main
 
 import (
 	"fmt"
-	"github.com/ant00kuzn/Gnomus/config"
-	"github.com/ant00kuzn/Gnomus/src/network"
-	"github.com/ant00kuzn/Gnomus/src/utils/logger"
 	"log"
 	"os"
-	"os/exec"
 	"reflect"
-	"strings"
 	"sync"
 	"time"
+
+	"Gnomus/config"
+	network "Gnomus/src/network/server"
+	"Gnomus/src/utils/logger"
 )
 
 func main() {
 	start := time.Now()
 	// Initialize logger
 	fmt.Println("Starting Gnomus v1.0.0...")
+
 	if err := logger.SetupLogger(); err != nil {
 		log.Fatalf("Failed to initialize logger: %v", err)
 	}
@@ -54,8 +54,6 @@ func main() {
 		os.Exit(1)
 	}
 
-	// Wait for goroutine to finish
-	wg.Wait()
 	// Start console input handler(input commands)
 	err := logger.StartInputHandler()
 	if err != nil {
@@ -96,63 +94,4 @@ const mutexLocked = 1
 func MutexLocked(m *sync.Mutex) bool {
 	state := reflect.ValueOf(m).Elem().FieldByName("state")
 	return state.Int()&mutexLocked == mutexLocked
-}
-
-func startInputHandler() error {
-	// Input buffer
-	inp := ""
-	// STDIN - os input
-	stdin := os.Stdin
-
-	// loop for infinity handling
-	for {
-		// Before write buffer we need to clear buffer
-		inp = ""
-		// Reading a line
-		_, err := fmt.Fscanln(stdin, &inp)
-		if err != nil {
-			return err
-		}
-		// Clearing input's buffer
-		inp = replace(inp, "n", "")
-		// Simple realization of stop command
-		if startsWith(inp, "stop") {
-			// Sending status to shutdown network server
-			server := Server{
-				Shutdown: false,
-			}
-			server.shutdownMutex.Lock()
-			server.Shutdown = true
-			server.shutdownMutex.Unlock()
-			fmt.Println("Stopping server...")
-			// Running process killing in 6 secs if failed to common shutdown
-			go func() {
-				time.Sleep(6 * time.Second)
-				exec.Command("kill", string(os.Getpid())).Run()
-			}()
-			// Waiting for shutdown network's server
-			for {
-				NetServerWorks.Lock()
-				if MutexLocked(NetServerWorks) {
-					NetServerWorks.Unlock()
-					time.Sleep(25 * time.Millisecond)
-				} else {
-					NetServerWorks.Unlock()
-					break
-				}
-			}
-			// Disabling the input
-			return nil
-		}
-		// If it's not stop command - when display buffer
-		fmt.Printf("Entered: %s\n", inp)
-	}
-}
-
-func replace(s, old, new string) string {
-	return strings.ReplaceAll(s, old, new)
-}
-
-func startsWith(s, prefix string) bool {
-	return len(s) >= len(prefix) && s[:len(prefix)] == prefix
 }

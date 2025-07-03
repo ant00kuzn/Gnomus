@@ -1,13 +1,14 @@
 package Gnomus
 
 import (
+	"Gnomus/config"
 	"encoding/json"
+	"log"
+
 	"github.com/Tnze/go-mc/chat"
 	"github.com/Tnze/go-mc/net"
 	"github.com/Tnze/go-mc/net/packet"
-	"github.com/ant00kuzn/Gnomus/config"
 	"github.com/google/uuid"
-	"log"
 )
 
 // Получаем пинг-подкючение(PingList)
